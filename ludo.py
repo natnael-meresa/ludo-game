@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Apr 15 20:27:38 2021
+Created on Sat Apr 17 17:49:50 2021
 
 @author: natnael
 """
 
+
 from tkinter import *
 import tkinter.font as font
 from PIL import ImageTk, Image
+import random
+import time
+
 
 root = Tk()
 root.title("Ludo King")
@@ -28,15 +32,11 @@ middleFrame = Frame(root)
 middleFrame.pack(side='top' )
 
 
-
 canvas = Canvas(middleFrame,  borderwidth=1, width="500", height="660", bg='white')
 canvas.pack(side='left', fill=X, expand=True)
 
 
-
-
-
-
+#this are the rectangles with the 18 cell 
 def draw_board(canvas):
 	for r in range(6):
 		for c in range(3):
@@ -82,17 +82,22 @@ def draw_board(canvas):
 draw_board(canvas)
 
 
+#start of big rectangeles
 
 canvas.create_rectangle(20, 105, 199, 284, fill='green')
 canvas.create_rectangle(291, 105, 470, 284, fill='red')
 canvas.create_rectangle(20, 375, 199,554 , fill='blue')
 canvas.create_rectangle(291, 375, 470, 554, fill='yellow')
+#end of the rectangeles
 
 
+#start of the white rectanges
 canvas.create_rectangle(50,135,169,254, fill='white')
 canvas.create_rectangle(321,135,440,254, fill='white')
 canvas.create_rectangle(321,405,440,524, fill='white')
 canvas.create_rectangle(50,405,169,524, fill='white')
+#end of white rectangles
+
 
 img = canvas.create_oval(60,145,100,185, fill='green')
 img = canvas.create_oval(120,145,160,185, fill='green')
@@ -115,15 +120,167 @@ canvas.create_oval(331,475,371,515, fill='yellow')
 canvas.create_oval(391,475,431,515, fill='yellow')
 
 
-
+#triangles
 canvas.create_polygon(199, 284, 291, 284, 245, 330, fill="green")
 canvas.create_polygon(199, 284, 199, 375, 245, 330, fill="red")
 canvas.create_polygon(199, 375, 291, 375, 245, 330, fill="blue")
 canvas.create_polygon(291, 284, 291, 375, 245, 330,  fill="yellow")
+#end of triangles
+
+#circle inside circle 26x26
+
+def move(player,num):
+	print(player,num)
+	temp_state= [0,0,0,0]
+	def make_normal(i):
+			img_2 = ImageTk.PhotoImage(Image.open('logo.png'))
+			player_obj[player][i].configure(image=img_2)
+			player_obj[player][i].image = img_2
+			player_obj[player][i]['state'] =NORMAL
+	k = 0
+	for i in obj_position[player]:
+		print(obj_position[player][k])
+		if int(num) == 6 and i <= 51:
+			make_normal(k)
+		elif int(num) == 5 and i <= 52 and i > 0:
+			make_normal(k)
+		elif int(num) == 4 and i <= 53 and i > 0:
+			make_normal(k)
+		elif int(num) == 3 and i <= 54 and i > 0:
+			make_normal(k)
+		elif int(num) == 2 and i <= 55 and i > 0:
+			make_normal(k)
+		elif int(num) == 1 and i <= 56 and i > 0:
+			make_normal(k)
+		k +=1		
+
+def update(ind, ins):
+
+	global cunt
+	global rand_int
+	frame = frames[ind]
+	ind += 1
+	if ind == frameCnt:
+		ind=0
+	if cunt > 40:
+		rand_int  = str(random.randint(1,6))
+		img = 'd-' + rand_int +'.png'
+		png2 = ImageTk.PhotoImage(Image.open(img))
+		btns[ins].configure(image=png2)
+		btns[ins].image = png2
+		btns[ins]['state'] =NORMAL
+		move(ins,rand_int)
+		return
+	btns[ins].configure(image=frame)
+	btns[ins].after(20, update, ind, ins)
+	btns[ins]['state'] =DISABLED
+	cunt+=1
+
+#moving
+
+def move_obect(plyr, obj):
+	print(rand_int)
+	
+
+# x - 60 , y = 60
+player_obj = [
+['player1_obj_1','player1_obj_2','player1_obj_3','player1_obj_4'],
+['player2_obj_1','player2_obj_2','player2_obj_3','player2_obj_4'],
+['player3_obj_1','player3_obj_2','player3_obj_3','player3_obj_4'],
+['player4_obj_1','player4_obj_2','player4_obj_3','player4_obj_4']
+]
+logo_img = ImageTk.PhotoImage(Image.open('logo.png'))
+
+#objects of first player
+player_obj[0][0]= Button(canvas, image=logo_img, command= lambda : move_obect(0,0))
+player1_ob_1_window = canvas.create_window(67,152, anchor="nw", window=player_obj[0][0])
+
+player_obj[0][1] = Button(canvas, image=logo_img, command= lambda : move_obect(0,1))
+player1_obj_2_window = canvas.create_window(127,152, anchor="nw", window=player_obj[0][1])
+
+
+player_obj[0][2] = Button(canvas, image=logo_img, command= lambda : move_obect(0,2))
+player1_obj_3_window = canvas.create_window(67,212, anchor="nw", window=player_obj[0][2])
+
+player_obj[0][3] = Button(canvas, image=logo_img, command= lambda : move_obect(0,3))
+player1_obj_4_window = canvas.create_window(127,212, anchor="nw", window=player_obj[0][3])
+
+#objects of second player
+
+player_obj[1][0]= Button(canvas, image=logo_img, command= lambda : move_obect(1,0))
+player1_ob_1_window = canvas.create_window(338,152, anchor="nw", window=player_obj[1][0])
+
+player_obj[1][1] = Button(canvas, image=logo_img, command= lambda : move_obect(1,1))
+player1_obj_2_window = canvas.create_window(398,152, anchor="nw", window=player_obj[1][1])
+
+
+player_obj[1][2] = Button(canvas, image=logo_img, command= lambda : move_obect(1,2))
+player1_obj_3_window = canvas.create_window(338,212, anchor="nw", window=player_obj[1][2])
+
+player_obj[1][3] = Button(canvas, image=logo_img, command= lambda : move_obect(1,3))
+player1_obj_4_window = canvas.create_window(398,212, anchor="nw", window=player_obj[1][3])
+
+#objects of thrid player
+
+obj_position = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
+
+for x in range(2):
+	for i in range(4):
+		player_obj[x][i]['state'] = DISABLED
+
+
+
+# dice image and its logic
+
+#initailtion
+frameCnt = 40
+frames = [PhotoImage(file='gif.gif', format = 'gif -index %i' %(i)) for i in range(frameCnt)]
+cunt =0
+png = 'gif.gif'
+img = ImageTk.PhotoImage(Image.open(png))
 
 
 
 
+def roll():
+    global cunt
+    cunt = 0
+    update(0,0)
+    print('roll')
 
+def roll2():
+    global cunt
+    cunt = 0
+    update(1,1)
+    print('roll')
+def roll3():
+    global cunt
+    cunt = 0
+    update(1,2)
+    print('roll')
+def roll4():
+    global cunt
+    cunt = 0
+    update(1,3)
+    print('roll')
+
+
+
+btns = ['btn1', 'btn2', 'btn3', 'btn4']
+btns[0] = Button(canvas, image=img, command=roll)
+roll_btn_window = canvas.create_window(34,10, anchor="nw", window=btns[0])
+
+
+btns[1] = Button(canvas, image = img, command=roll2)
+roll_btn_window = canvas.create_window(390,10, anchor="nw", window=btns[1])
+
+btns[2] = Button(canvas, image = img, command=roll3)
+roll_btn_window = canvas.create_window(34,560, anchor="nw", window=btns[2])
+
+
+btns[3] = Button(canvas, image = img, command=roll4)
+roll_btn_window = canvas.create_window(390,560, anchor="nw", window=btns[3])
+
+#end of dice image and its logics
 
 root.mainloop()
